@@ -38,6 +38,8 @@ Furthermore, each visible unit is connected to all the hidden units (this connec
 
 For example, suppose we have a set of six movies (Harry Potter, Avatar, LOTR 3, Gladiator, Titanic, and Glitter) and we ask users to tell us which ones they want to watch. If we want to learn two latent units underlying movie preferences -- for example, two natural groups in our set of six movies appear to be SF/fantasy (containing Harry Potter, Avatar, and LOTR 3) and Oscar winners (containing LOTR 3, Gladiator, and Titanic), so we might hope that our latent units will correspond to these categories -- then our RBM would look like the following:
 
+![Agent detection example](https://raw.githubusercontent.com/MiguelAguilera/restricted-boltzmann-machines/example-agents.png
+
 [![RBM Example](http://dl.dropbox.com/u/10506/blog/rbms/rbm-example.png)](http://dl.dropbox.com/u/10506/blog/rbms/rbm-example.png)
 
 (Note the resemblance to a factor analysis graphical model.)
