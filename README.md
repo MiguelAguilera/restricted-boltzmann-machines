@@ -40,7 +40,7 @@ For example, suppose we have a set of six movies (Harry Potter, Avatar, LOTR 3, 
 
 ![Agent detection example](https://raw.githubusercontent.com/MiguelAguilera/restricted-boltzmann-machines/example-agents.png
 
-[![RBM Example](http://dl.dropbox.com/u/10506/blog/rbms/rbm-example.png)](http://dl.dropbox.com/u/10506/blog/rbms/rbm-example.png)
+![RBM Example](http://dl.dropbox.com/u/10506/blog/rbms/rbm-example.png)](http://dl.dropbox.com/u/10506/blog/rbms/rbm-example.png)
 
 (Note the resemblance to a factor analysis graphical model.)
 
