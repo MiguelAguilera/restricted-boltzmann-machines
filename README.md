@@ -104,52 +104,43 @@ So by adding positive - negative graidents to each edge weight, we're helping th
 
 We can use the code in this repository (forked from [Edwin Chen](https://github.com/echen/restricted-boltzmann-machines)) in Python (the code is heavily commented, so take a look if you're still a little fuzzy on how everything works) to understand how RBMs work through an example.
 
-First, using the functions in generate_patterns.py we can generate different patterns of movement: random movement (just binary white noise) and random oscillatory functions (in which p(m(t)=1) = sin(2*pi*t/T), where T is the period of the oscillations). We choose to have 3 types of movement patterns we want to differentiate, 1 random and 2 oscillatory with periods (T_A=4 and T_B=9).
+First, using the functions in generate_patterns.py we can generate different patterns of movement: random movement (just binary white noise) and random oscillatory functions (in which p(m(t)=1) = sin(2*pi*t/T), where T is the period of the oscillations). We choose to have 3 types of movement patterns we want to differentiate, 1 random and 2 oscillatory with periods (T_A=5 and T_B=9).
 
 We generate 200 samples for each kind of movement, and use sequences of m(t) with lenght L=30. We train the RBM introducing m(t) into the visible units.
 
-The network learned the following weights:
+After training, we generate 8 new samples of each type of movement and feed them into the RBM, obtaining the following values for the hidden units:
 
-Bias Unit           Hidden 1            Hidden 2
--5.13468723e+00     -3.77330347e+00     -4.23629627e+00]
- [  2.86927449e-01  -3.48477941e-01  -3.03187951e-01]
- [ -2.46466966e+00   3.66030860e-01  -1.15184061e+00]
- [ -1.53050155e+00  -1.39768556e+00   1.56902201e+00]
- [  9.80087934e-01  -3.17318332e+00   2.04187102e+00]
- [ -5.80724064e-01  -2.24043536e-02   3.27157327e-01]
- [ -1.15451377e+00   1.59494546e+00  -1.81298788e+00]
- [  1.42060879e+00   8.88703270e-01  -1.17559830e+00]
- [  4.17667655e+00   9.23718868e-01   3.11613025e-01]
- [  7.74464981e-02   1.35564085e+00  -6.45857978e-02]
- [ -1.52966780e+00   1.42732534e+00  -1.45648408e+00]
- [ -2.49693672e-02  -1.59027209e+00  -4.23550030e-03]
- [ -1.69081200e+00  -1.56800623e+00   5.54799937e+00]
- [ -2.84496801e-01  -1.80875243e+00   3.92430283e-01]
- [ -2.30432988e+00   1.54358672e+00  -1.14135291e+00]
- [  3.34219441e-01   6.32083550e-01  -3.69386402e-01]
- [  2.84422209e+00   2.63497806e-01   9.17476992e-01]
- [  6.92364261e-01   2.75268116e+00  -8.88922371e-01]
- [  7.84413717e-01   8.10652213e-01  -4.14628380e+00]
- [  3.21605515e-01  -2.77477451e-01  -2.87353907e-01]
- [  2.13107915e+00  -3.50305555e+00   1.06353226e+00]
- [ -6.99603364e-02  -3.11129783e+00   4.24150094e-01]
- [ -3.16811906e+00  -5.03488643e-02  -5.59264934e-01]
- [ -4.86827218e-01  -5.17641977e-02   4.52268986e-01]
- [  7.35922229e-01  -1.68127765e-01   2.40071849e+00]
- [  9.39823003e-01   1.65288584e+00  -8.53349255e-01]
- [  6.58323303e-01   2.39766610e+00  -3.96457344e+00]
- [  4.79565462e-01   9.62013255e-01  -2.58785995e-01]
- [  1.11541290e+00  -1.05518197e+00   1.79248626e+00]
- [ -9.26844020e-01  -4.84861896e-01   8.44056653e-01]
- [ -2.71569102e+00  -1.18506187e+00  -1.20211097e+00]]
- 
+Sinusoidal A
+ [ 1.  0.]
+ [ 1.  0.]
+ [ 1.  0.]
+ [ 1.  0.]
+ [ 1.  0.]
+ [ 1.  0.]
+ [ 1.  0.]
+ [ 1.  0.]
+Sinusoidal B
+ [ 0.  1.]
+ [ 0.  1.]
+ [ 0.  1.]
+ [ 0.  1.]
+ [ 0.  1.]
+ [ 0.  1.]
+ [ 0.  1.]
+ [ 0.  1.]
+Random
+ [ 0.  0.]
+ [ 0.  0.]
+ [ 0.  0.]
+ [ 0.  0.]
+ [ 0.  0.]
+ [ 0.  0.]
+ [ 1.  0.]
+ [ 0.  0.]
 
 
-Note that the first hidden unit seems to correspond to the Oscar winners, and the second hidden unit seems to correspond to the SF/fantasy movies, just as we were hoping.
+We see that the combination [1,0] is activated for oscillatory patterns with T_A=5, the combiantion [0,1] for oscillatory patterns with T_B=9, and the combination [0,0] for random patterns. Note that one pattern of random movement is misclassified as oscillatory movement. This is because that particular pattern happens to be very similar to an oscillatory pattern (m=[0 0 1 0 0 1 1 1 1 0 1 1 0 0 1 0 1 0 0 0 1 1 0 1 1 1 1 1 0 0]). Having a larger value of L and generating more sequences in the trainig phase should minimize the errors in pattern detection.
 
-What happens if we give the RBM a new user, George, who has (Harry Potter = 0, Avatar = 0, LOTR 3 = 0, Gladiator = 1, Titanic = 1, Glitter = 0) as his preferences? It turns the Oscar winners unit on (but not the SF/fantasy unit), correctly guessing that George probably likes movies that are Oscar winners.
-
-What happens if we activate only the SF/fantasy unit, and run the RBM a bunch of different times? In my trials, it turned on Harry Potter, Avatar, and LOTR 3 three times; it turned on Avatar and LOTR 3, but not Harry Potter, once; and it turned on Harry Potter and LOTR 3, but not Avatar, twice. Note that, based on our training examples, these generated preferences do indeed match what we might expect real SF/fantasy fans want to watch.
 
 # Modifications
 
