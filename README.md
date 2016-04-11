@@ -1,3 +1,5 @@
+(Adapted from [Edwin Chen](github) and  [Wikipedia page on RBMs](https://en.wikipedia.org/wiki/Restricted_Boltzmann_machine))
+
 # How to Use
 
 First, initialize an RBM with the desired number of visible and hidden units.
@@ -65,31 +67,36 @@ Restricted Boltzmann Machines, and neural networks in general, work by updating 
 * Compute the **activation energy** $a_i = \sum_j w_{ij} x_j$ of unit $i$, where the sum runs over all units $j$ that unit $i$ is connected to, $w_{ij}$ is the weight of the connection between $i$ and $j$, and $x_j$ is the 0 or 1 state of unit $j$. In other words, all of unit $i$'s neighbors send it a message, and we compute the sum of all these messages.
 * Let $p_i = \sigma(a_i)$, where $\sigma(x) = 1/(1 + exp(-x))$ is the logistic function. Note that $p_i$ is close to 1 for large positive activation energies, and $p_i$ is close to 0 for negative activation energies.
 * We then turn unit $i$ on with probability $p_i$, and turn it off with probability $1 - p_i$.
-* (In layman's terms, units that are positively connected to each other try to get each other to share the same state (i.e., be both on or off), while units that are negatively connected to each other are enemies that prefer to be in different states.)
 
-For example, let's suppose our two hidden units really do correspond to SF/fantasy and Oscar winners. 
+For example, let's suppose our two hidden units really do correspond to different strategies for the opponents movement.
 
-* If Alice has told us her six binary preferences on our set of movies, we could then ask our RBM which of the hidden units her preferences activate (i.e., ask the RBM to explain her preferences in terms of latent factors). So the six movies send messages to the hidden units, telling them to update themselves. (Note that even if Alice has declared she wants to watch Harry Potter, Avatar, and LOTR 3, this doesn't guarantee that the SF/fantasy hidden unit will turn on, but only that it will turn on with high *probability*. This makes a bit of sense: in the real world, Alice wanting to watch all three of those movies makes us highly suspect she likes SF/fantasy in general, but there's a small chance she wants to watch them for other reasons. Thus, the RBM allows us to *generate* models of people in the messy, real world.)
-* Conversely, if we know that one person likes SF/fantasy (so that the SF/fantasy unit is on), we can then ask the RBM which of the movie units that hidden unit turns on (i.e., ask the RBM to generate a set of movie recommendations). So the hidden units send messages to the movie units, telling them to update their states. (Again, note that the SF/fantasy unit being on doesn't guarantee that we'll always recommend all three of Harry Potter, Avatar, and LOTR 3 because, hey, not everyone who likes science fiction liked Avatar.)
+* If opponent *A* has a particular pattern of movement (e.g. m = [0,1,0,1,1,0,1,1,1,0,0,...]), we could provide those values to the visible units, and then ask our RBM which of the hidden units activate. Similar patterns will activate the same hidden units, whereas different patterns will activate different hidden units. Thus, the RBM allows us to *generate* models of people in the messy, real world.
+* Conversely, we could set the RBM with a particular configuration of the hidden units and ask which visible units turn on, generating possible patterns that *match the model* learned by the RBM.
 
-# Learning Weights
+# Training
 
-So how do we learn the connection weights in our network? Suppose we have a bunch of training examples, where each training example is a binary vector with six elements corresponding to a user's movie preferences. Then for each epoch, do the following:
+So how do we learn the connection weights in our network? Suppose we have a bunch of training examples, where each training example is a binary vector with L elements corresponding to a opponent pattern of movement m(t). Learning the different patterns means to maximize the product of probabilities assigned to some training set V (here each v corresponds to a particular occurrence of a m(t) pattern):
 
-* Take a training example (a set of six movie preferences). Set the states of the visible units to these preferences.
-* Next, update the states of the hidden units using the logistic activation rule described above: for the $j$th hidden unit, compute its activation energy $a_j = \sum_i w_{ij} x_i$, and set $x_j$ to 1 with probability $\sigma(a_j)$ and to 0 with probability $1 - \sigma(a_j)$. Then for each edge $e_{ij}$, compute $Positive(e_{ij}) = x_i * x_j$ (i.e., for each pair of units, measure whether they're both on).
-* Now **reconstruct** the visible units in a similar manner: for each visible unit, compute its activation energy $a_i$, and update its state. (Note that this *reconstruction* may not match the original preferences.) Then update the hidden units again, and compute $Negative(e_{ij}) = x_i * x_j$ for each edge.
-* Update the weight of each edge $e_{ij}$ by setting $w_{ij} = w_{ij} + L * (Positive(e_{ij}) - Negative(e_{ij}))$, where $L$ is a learning rate.
-* Repeat over all training examples.
+![training-function](https://upload.wikimedia.org/math/f/c/c/fccaba865768c42939126335d12032c6.png)
+
+The algorithm most often used to train RBMs, that is, to optimize the weight vector W, is the contrastive divergence (CD) algorithm due to Hinton, originally developed to train PoE (product of experts) models.[13][14] The algorithm performs Gibbs sampling and is used inside a gradient descent procedure (similar to the way backpropagation is used inside such a procedure when training feedforward neural nets) to compute weight update.
+
+The basic, single-step contrastive divergence (CD-1) procedure for a single sample can be summarized as follows:
+
+    - Take a training sample v, compute the probabilities of the hidden units and sample a hidden activation vector h from this probability distribution.
+    - Compute the outer product of v and h and call this the positive gradient.
+    - From h, sample a reconstruction v' of the visible units, then resample the hidden activations h' from this. (Gibbs sampling step)
+    - Compute the outer product of v' and h' and call this the negative gradient.
+    - Let the weight update to w_{i,j} be the positive gradient minus the negative gradient, times some learning rate: \Delta w_{i,j} = \epsilon (vh - v'h'}).
 
 Continue until the network converges (i.e., the error between the training examples and their reconstructions falls below some threshold) or we reach some maximum number of epochs.
 
 Why does this update rule make sense? Note that 
 
-* In the first phase, $Positive(e_{ij})$ measures the association between the $i$th and $j$th unit that we *want* the network to learn from our training examples;
-* In the "reconstruction" phase, where the RBM generates the states of visible units based on its hypotheses about the hidden units alone, $Negative(e_{ij})$ measures the association that the network *itself* generates (or "daydreams" about) when no units are fixed to training data. 
+* In the first phase, the positive gradient measures the association between the v and h unit that we *want* the network to learn from our training examples;
+* In the "reconstruction" phase, where the RBM generates the states of visible units based on its hypotheses about the hidden units alone, the negative gradient measures the association that the network *itself* generates (or "daydreams" about) when no units are fixed to training data. 
 
-So by adding $Positive(e_{ij}) - Negative(e_{ij})$ to each edge weight, we're helping the network's daydreams better match the reality of our training examples.
+So by adding positive - negative graidents to each edge weight, we're helping the network's daydreams better match the reality of our training examples.
 
 (You may hear this update rule called **contrastive divergence**, which is basically a funky term for "approximate gradient descent".)
 
