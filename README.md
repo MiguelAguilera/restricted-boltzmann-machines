@@ -26,13 +26,12 @@ Finally, run wild!
 
 Suppose you are modelling and artificial intelligence agent which competes with different types of enemies, each one implementing different stochastical strategies. We want the agent to detect the different strategies developed by its opponents in order to adapt its behaviour to them, without necessarily having previous information about which strategy is being implemented except the patterns of movement displayed by each opponent.
 
-Restricted Boltzmann Machines essentially perform a *binary* version of factor analysis. (This is one way of thinking about RBMs; there are, of course, others, and lots of different ways to use RBMs, but I'll adopt this approach for this post.) Instead of users rating a set of movies on a continuous scale, they simply tell you whether they like a movie or not, and the RBM will try to discover latent factors that can explain the activation of these movie choices.
-
-More technically, a Restricted Boltzmann Machine is a **stochastic neural network** (*neural network* meaning we have neuron-like units whose binary activations depend on the neighbors they're connected to; *stochastic* meaning these activations have a probabilistic element) consisting of:
-
+Restricted Boltzmann Machines are **stochastic neural networks** (*neural network* meaning we have neuron-like units whose binary activations depend on the neighbors they're connected to; *stochastic* meaning these activations have a probabilistic element) consisting of:
 * One layer of **visible units** (users' movie preferences whose states we know and set);
 * One layer of **hidden units** (the latent factors we try to learn); and 
-* A bias unit (whose state is always on, and is a way of adjusting for the different inherent popularities of each movie). 
+* A bias unit (optional) whose state is always on, and is a way of adjusting for the different inherent occurrences of each input pattern). 
+
+The two layers of hidden and visible units are connected through a matrix of weights W = (w_{i,j}) (size m×n) associated with the connection between hidden unit h_j and visible unit v_i, as well as bias weights (offsets) a_i for the visible units and b_j for the hidden units. Given these, the energy of a configuration (pair of boolean vectors) (v,h) is defined as
 
 Furthermore, each visible unit is connected to all the hidden units (this connection is undirected, so each hidden unit is also connected to all the visible units), and the bias unit is connected to all the visible units and all the hidden units. To make learning easier, we restrict the network so that no visible unit is connected to any other visible unit and no hidden unit is connected to any other hidden unit.
 
