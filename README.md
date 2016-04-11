@@ -1,4 +1,4 @@
-(Adapted from [Edwin Chen](github) and  [Wikipedia page on RBMs](https://en.wikipedia.org/wiki/Restricted_Boltzmann_machine))
+(Adapted from [Edwin Chen](github) and  the [Wikipedia page on RBMs](https://en.wikipedia.org/wiki/Restricted_Boltzmann_machine))
 
 # How to Use
 
