@@ -29,9 +29,8 @@ Suppose you are modelling and artificial intelligence agent which competes with 
 Restricted Boltzmann Machines are **stochastic neural networks** (*neural network* meaning we have neuron-like units whose binary activations depend on the neighbors they're connected to; *stochastic* meaning these activations have a probabilistic element) consisting of:
 * One layer of **visible units** (users' movie preferences whose states we know and set);
 * One layer of **hidden units** (the latent factors we try to learn); and 
-* A bias unit (optional) whose state is always on, and is a way of adjusting for the different inherent occurrences of each input pattern). 
 
-The two layers of hidden and visible units are connected through a matrix of weights W = (w_{i,j}) (size m×n) associated with the connection between hidden unit h_j and visible unit v_i, as well as bias weights (offsets) a_i for the visible units and b_j for the hidden units. Given these, the energy of a configuration (pair of boolean vectors) (v,h) is defined as
+Furthermore, each visible unit is connected to all the hidden units (this connection is undirected, so each hidden unit is also connected to all the visible units). To make learning easier, we restrict the network so that no visible unit is connected to any other visible unit and no hidden unit is connected to any other hidden unit. Thus, the two layers of hidden and visible units are connected through a matrix of weights W = (w_{i,j}) (size m×n) associated with the connection between hidden unit h_j and visible unit v_i, as well as bias weights (offsets) a_i for the visible units and b_j for the hidden units. Given these, the energy of a configuration (pair of boolean vectors) (v,h) is defined as
 
 ![RBM-energy](https://upload.wikimedia.org/math/b/e/0/be0bf0da1b4d822d3852c56a504b4f72.png)
 
@@ -49,16 +48,13 @@ and
 
 ![RBM-individual-probability](https://upload.wikimedia.org/math/0/b/3/0b3b7ace86df7502dcb6b1eba976b67c.png)
 
-(where the bias unit can be considered as an extra hidden unit). 
-
-
-Furthermore, each visible unit is connected to all the hidden units (this connection is undirected, so each hidden unit is also connected to all the visible units), and the bias unit is connected to all the visible units and all the hidden units. To make learning easier, we restrict the network so that no visible unit is connected to any other visible unit and no hidden unit is connected to any other hidden unit.
-
 For example, suppose we are modelling a videogame agent in a world with different kinds of characters (e.g. enemies, monsters, civilians...) which present different movement patterns depending on their strategies to attack or avoid enemy attacks, e.g. random movement or random oscillatory movement. Imaging we want to model an agent which is able to display different responses deppending on the strategy implemented by the characters it encounters. However, as the different patterns have a compontent of random behaviour, they are not trivial to differentiate directly.
 
 ![Agent detection example](https://github.com/MiguelAguilera/restricted-boltzmann-machines/blob/master/example-agents.png)
 
 In order to detect different patterns of movement and infer which strategies are behind each pattern we will implement a Restricted Boltzmann Machine, in wich we will record a set of movements m(t), for t=1,...,L, where m(t)=1 represents the agent moving up and m(t)=0 represents the agent moving down.
+
+For simplicity in the learnign phase, we will ignore the offsets of visible and hidden neurons a_i and b_j and substitute them for an extra *bias unit*, whose state is always on and it will be connected to all hidden and visible units (having and equivalent effect to adding the offsets):
 
 ![RBM Example](https://github.com/MiguelAguilera/restricted-boltzmann-machines/blob/master/RBM-example.png)
 
