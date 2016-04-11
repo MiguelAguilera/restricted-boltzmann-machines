@@ -83,11 +83,11 @@ The algorithm most often used to train RBMs, that is, to optimize the weight vec
 
 The basic, single-step contrastive divergence (CD-1) procedure for a single sample can be summarized as follows:
 
-    - Take a training sample v, compute the probabilities of the hidden units and sample a hidden activation vector h from this probability distribution.
-    - Compute the outer product of v and h and call this the positive gradient.
-    - From h, sample a reconstruction v' of the visible units, then resample the hidden activations h' from this. (Gibbs sampling step)
-    - Compute the outer product of v' and h' and call this the negative gradient.
-    - Let the weight update to w_{i,j} be the positive gradient minus the negative gradient, times some learning rate: \Delta w_{i,j} = \epsilon (vh - v'h'}).
+* Take a training sample v, compute the probabilities of the hidden units and sample a hidden activation vector h from this probability distribution.
+* Compute the outer product of v and h and call this the positive gradient.
+* From h, sample a reconstruction v' of the visible units, then resample the hidden activations h' from this. (Gibbs sampling step)
+* Compute the outer product of v' and h' and call this the negative gradient.
+* Let the weight update to w_{i,j} be the positive gradient minus the negative gradient, times some learning rate: \Delta w_{i,j} = \epsilon (vh - v'h'}).
 
 Continue until the network converges (i.e., the error between the training examples and their reconstructions falls below some threshold) or we reach some maximum number of epochs.
 
