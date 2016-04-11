@@ -138,7 +138,6 @@ Random
  [ 1.  0.]
  [ 0.  0.]
 
-
 We see that the combination [1,0] is activated for oscillatory patterns with T_A=5, the combiantion [0,1] for oscillatory patterns with T_B=9, and the combination [0,0] for random patterns. Note that one pattern of random movement is misclassified as oscillatory movement. This is because that particular pattern happens to be very similar to an oscillatory pattern (m=[0 0 1 0 0 1 1 1 1 0 1 1 0 0 1 0 1 0 0 0 1 1 0 1 1 1 1 1 0 0]). Having a larger value of L and generating more sequences in the trainig phase should minimize the errors in pattern detection.
 
 
