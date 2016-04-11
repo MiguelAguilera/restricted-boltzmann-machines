@@ -9,7 +9,7 @@ First, initialize an RBM with the desired number of visible and hidden units.
 Next, train the machine:
 
     training_data = np.array([[1,1,1,0,0,0],[1,0,1,0,0,0],[1,1,1,0,0,0],[0,0,1,1,1,0], [0,0,1,1,0,0],[0,0,1,1,1,0]]) # A 6x6 matrix where each row is a training example and each column is a visible unit.
-    r.train(training_data, max_epochs = 5000) # Don't run the training for more than 5000 epochs.
+    r.train(training_data, max_epochs = 5000)
     
 Finally, run wild!
 
