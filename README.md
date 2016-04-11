@@ -32,6 +32,14 @@ Restricted Boltzmann Machines are **stochastic neural networks** (*neural networ
 * A bias unit (optional) whose state is always on, and is a way of adjusting for the different inherent occurrences of each input pattern). 
 
 The two layers of hidden and visible units are connected through a matrix of weights W = (w_{i,j}) (size m×n) associated with the connection between hidden unit h_j and visible unit v_i, as well as bias weights (offsets) a_i for the visible units and b_j for the hidden units. Given these, the energy of a configuration (pair of boolean vectors) (v,h) is defined as
+![RBM-energy](https://upload.wikimedia.org/math/b/e/0/be0bf0da1b4d822d3852c56a504b4f72.png)
+This energy function is analogous to that of a Hopfield network. As in general Boltzmann machines, probability distributions over hidden and/or visible vectors are defined in terms of the energy function:
+![RBM-probability](https://upload.wikimedia.org/math/f/3/b/f3b3eef66258cece4d18aa06344eb569.png)
+where Z is a partition function defined as the sum of e^{-E(v,h)} over all possible configurations.
+
+Since the RBM has the shape of a bipartite graph, with no intra-layer connections, the hidden unit activations are mutually independent given the visible unit activations and conversely, the visible unit activations are mutually independent given the hidden unit activations.[7] That is, for m visible units and n hidden units, the conditional probability of a configuration of the visible units v, given a configuration of the hidden units h, is
+![RBM-individual-probability](https://upload.wikimedia.org/math/a/8/4/a8437d5b9b8dca11a35cd9bb1bc6cefc.png) and ![RBM-individual-probability](https://upload.wikimedia.org/math/0/b/3/0b3b7ace86df7502dcb6b1eba976b67c.png), (where the bias unit can be considered as an extra hidden unit). 
+
 
 Furthermore, each visible unit is connected to all the hidden units (this connection is undirected, so each hidden unit is also connected to all the visible units), and the bias unit is connected to all the visible units and all the hidden units. To make learning easier, we restrict the network so that no visible unit is connected to any other visible unit and no hidden unit is connected to any other hidden unit.
 
