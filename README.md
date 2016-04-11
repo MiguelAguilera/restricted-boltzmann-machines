@@ -1,4 +1,4 @@
-(Adapted from [Edwin Chen](github) and  the [Wikipedia page on RBMs](https://en.wikipedia.org/wiki/Restricted_Boltzmann_machine))
+(Adapted from [Edwin Chen](https://github.com/echen/restricted-boltzmann-machines) and  the [Wikipedia page on RBMs](https://en.wikipedia.org/wiki/Restricted_Boltzmann_machine))
 
 # How to Use
 
@@ -102,27 +102,48 @@ So by adding positive - negative graidents to each edge weight, we're helping th
 
 # Examples
 
-I wrote [a simple RBM implementation](https://github.com/echen/restricted-boltzmann-machines) in Python (the code is heavily commented, so take a look if you're still a little fuzzy on how everything works), so let's use it to walk through some examples.
+We can use the code in this repository (forked from [Edwin Chen](https://github.com/echen/restricted-boltzmann-machines)) in Python (the code is heavily commented, so take a look if you're still a little fuzzy on how everything works) to understand how RBMs work through an example.
 
-First, I trained the RBM using some fake data.
+First, using the functions in generate_patterns.py we can generate different patterns of movement: random movement (just binary white noise) and random oscillatory functions (in which p(m(t)=1) = sin(2*pi*t/T), where T is the period of the oscillations). We choose to have 3 types of movement patterns we want to differentiate, 1 random and 2 oscillatory with periods (T_A=4 and T_B=9).
 
-* Alice: (Harry Potter = 1, Avatar = 1, LOTR 3 = 1, Gladiator = 0, Titanic = 0, Glitter = 0). Big SF/fantasy fan.
-* Bob: (Harry Potter = 1, Avatar = 0, LOTR 3 = 1, Gladiator = 0, Titanic = 0, Glitter = 0). SF/fantasy fan, but doesn't like Avatar.
-* Carol: (Harry Potter = 1, Avatar = 1, LOTR 3 = 1, Gladiator = 0, Titanic = 0, Glitter = 0). Big SF/fantasy fan.
-* David: (Harry Potter = 0, Avatar = 0, LOTR 3 = 1, Gladiator = 1, Titanic = 1, Glitter = 0). Big Oscar winners fan.
-* Eric:  (Harry Potter = 0, Avatar = 0, LOTR 3 = 1, Gladiator = 1, Titanic = 1, Glitter = 0). Oscar winners fan, except for Titanic.
-* Fred: (Harry Potter = 0, Avatar = 0, LOTR 3 = 1, Gladiator = 1, Titanic = 1, Glitter = 0). Big Oscar winners fan.
+We generate 200 samples for each kind of movement, and use sequences of m(t) with lenght L=30. We train the RBM introducing m(t) into the visible units.
 
 The network learned the following weights:
 
-                     Bias Unit       Hidden 1        Hidden 2
-    Bias Unit       -0.08257658     -0.19041546      1.57007782 
-    Harry Potter    -0.82602559     -7.08986885      4.96606654 
-    Avatar          -1.84023877     -5.18354129      2.27197472 
-    LOTR 3           3.92321075      2.51720193      4.11061383 
-    Gladiator        0.10316995      6.74833901     -4.00505343 
-    Titanic         -0.97646029      3.25474524     -5.59606865 
-    Glitter         -4.44685751     -2.81563804     -2.91540988
+Bias Unit           Hidden 1            Hidden 2
+-5.13468723e+00     -3.77330347e+00     -4.23629627e+00]
+ [  2.86927449e-01  -3.48477941e-01  -3.03187951e-01]
+ [ -2.46466966e+00   3.66030860e-01  -1.15184061e+00]
+ [ -1.53050155e+00  -1.39768556e+00   1.56902201e+00]
+ [  9.80087934e-01  -3.17318332e+00   2.04187102e+00]
+ [ -5.80724064e-01  -2.24043536e-02   3.27157327e-01]
+ [ -1.15451377e+00   1.59494546e+00  -1.81298788e+00]
+ [  1.42060879e+00   8.88703270e-01  -1.17559830e+00]
+ [  4.17667655e+00   9.23718868e-01   3.11613025e-01]
+ [  7.74464981e-02   1.35564085e+00  -6.45857978e-02]
+ [ -1.52966780e+00   1.42732534e+00  -1.45648408e+00]
+ [ -2.49693672e-02  -1.59027209e+00  -4.23550030e-03]
+ [ -1.69081200e+00  -1.56800623e+00   5.54799937e+00]
+ [ -2.84496801e-01  -1.80875243e+00   3.92430283e-01]
+ [ -2.30432988e+00   1.54358672e+00  -1.14135291e+00]
+ [  3.34219441e-01   6.32083550e-01  -3.69386402e-01]
+ [  2.84422209e+00   2.63497806e-01   9.17476992e-01]
+ [  6.92364261e-01   2.75268116e+00  -8.88922371e-01]
+ [  7.84413717e-01   8.10652213e-01  -4.14628380e+00]
+ [  3.21605515e-01  -2.77477451e-01  -2.87353907e-01]
+ [  2.13107915e+00  -3.50305555e+00   1.06353226e+00]
+ [ -6.99603364e-02  -3.11129783e+00   4.24150094e-01]
+ [ -3.16811906e+00  -5.03488643e-02  -5.59264934e-01]
+ [ -4.86827218e-01  -5.17641977e-02   4.52268986e-01]
+ [  7.35922229e-01  -1.68127765e-01   2.40071849e+00]
+ [  9.39823003e-01   1.65288584e+00  -8.53349255e-01]
+ [  6.58323303e-01   2.39766610e+00  -3.96457344e+00]
+ [  4.79565462e-01   9.62013255e-01  -2.58785995e-01]
+ [  1.11541290e+00  -1.05518197e+00   1.79248626e+00]
+ [ -9.26844020e-01  -4.84861896e-01   8.44056653e-01]
+ [ -2.71569102e+00  -1.18506187e+00  -1.20211097e+00]]
+ 
+
 
 Note that the first hidden unit seems to correspond to the Oscar winners, and the second hidden unit seems to correspond to the SF/fantasy movies, just as we were hoping.
 
