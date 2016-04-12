@@ -31,4 +31,3 @@ if __name__ == '__main__':
 	dataC=generate_random(n,L)
 	data=np.vstack((dataA,dataB,dataC))
 	np.save('movement-patterns',data)
-		
